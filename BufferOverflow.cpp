@@ -36,13 +36,15 @@ void demoBufferOverflowData() {
 	printf("login as: ");
 	fflush(stdout);
 	//gets(userName); // use scanf("%s", userName); if gets fails with identifier not found
-	scanf("%s", userName);
+    memset(userName, 0, USER_INPUT_MAX_LENGTH);
+    fgets(userName, USER_INPUT_MAX_LENGTH - 1, stdin);
+    gets_s(userName, USER_INPUT_MAX_LENGTH - 1);
 
 	// Get password
 	printf("%s@vulnerable.machine.com: ", userName);
 	fflush(stdout);
 	//gets(passwd);  
-	scanf("%s", passwd); // use scanf("%s", passwd); if gets fails with identifier not found
+	scanf("%s-8s", passwd); // use scanf("%s", passwd); if gets fails with identifier not found
 
 	// Check user rights (set to NORMAL_USER and not changed in code)
 	if (userRights == NORMAL_USER) {
@@ -83,7 +85,7 @@ void demoAdjacentMemoryOverflow(char* userName, char* password) {
 
 	memset(buf, 0, sizeof(buf));
 	memset(message, 1, sizeof(message));
-	strncpy(buf, userName, sizeof(buf));              // We will copy only characters which fits into buf
+    strncpy(buf,arg1,sizeof(buf) - 1);;              // We will copy only characters which fits into buf
 
 													  // Now print username to standard output - nothing sensitive, right?
 	sprintf(message, "Checking '%s' password\n", buf);
@@ -110,7 +112,7 @@ void demoDataTypeOverflow(int totalItemsCount, some_structure* pItem, int itemPo
 	int bytesToAllocation = totalItemsCount * sizeof(some_structure);
 	printf("Bytes to allocation: %d\n", bytesToAllocation);
 	data_copy = (some_structure*)malloc(bytesToAllocation);
-	if (itemPosition >= 0 && itemPosition < totalItemsCount) {
+	if (itemPosition >= 0 && itemPosition < totalItemsCount &&  ) {
 		memcpy(&(data_copy[itemPosition]), pItem, sizeof(some_structure));
 	}
 	else {
